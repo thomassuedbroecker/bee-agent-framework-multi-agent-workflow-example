@@ -109,7 +109,8 @@ for await (const { prompt } of reader) {
         });
       */
   });
-  await memory.addMany(result.newMessages);
+  // await memory.addMany(result.newMessages); // save all steps including the answer for the conversation
+  await memory.addMany(result.newMessages.slice(-1)); // save only the final answer for in the conversation
   reader.write(`Agent 🤖`, result.finalAnswer);
   const endTime = performance.now()
   console.log(`\n-> The time to answer the question the LLMs took ${((endTime - startTime)/1000)} seconds.\n`)
