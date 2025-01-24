@@ -12,7 +12,7 @@ These example questions for the workflow are only to determine whether two diffe
 
 * The first question addresses a matter requiring `up-to-date` information, which means that a specialist must formulate a response. 
 
-* The second question is designed to require current facts and additional information, which can't be easily found with a search engine on the internet. The goal of the second question is not to obtain a concrete answer but to demonstrate that the combination of a specialist and research is effective and the solver is able to successfully integrate this information. However, it is important to note that humans or agents cannot answer the second question this topic quickly. 
+* The second question is designed to require current facts and additional information, which can't be easily found with a search engine on the internet. The goal of the second question is not to obtain a concrete answer but to demonstrate that the combination of a specialist and research is effective and the solver is able to successfully integrate this information. However, it is important to note that humans or agents cannot answer the second question related to this topic quickly. 
 
 These are the two different questions which the workflow should answer:
 
