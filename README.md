@@ -6,7 +6,15 @@ The repository as a starting point for multi-agents with the coding from the [Mu
 
 Currently, on January 20, the [Bee Agent Framework provides experimental workflows](https://i-am-bee.github.io/bee-agent-framework/#/workflows) with a multi-agent configuration running them in a sequence.
 
-We will ask two different questions which the workflow should answer:
+The following example two questions concerns the weather in New York. 
+
+These example questions for the workflow are only to determine whether two different roles are needed and what response the solver generates with the available input. 
+
+* The first question addresses a matter requiring `up-to-date` information, which means that a specialist must formulate a response. 
+
+* The second question is designed to require current facts and additional information, which can't be easily found with a search engine on the internet. The goal of the second question is not to obtain a concrete answer but to demonstrate that the combination of a specialist and research is effective and the solver is able to successfully integrate this information. However, it is important to note that humans or agents cannot answer the second question this topic quickly. 
+
+These are the two different questions which the workflow should answer:
 
 * "What is the current weather in New York?" -> `should be solved only by the specialist`.
 ![](images/bee-multiagent-01.gif)
