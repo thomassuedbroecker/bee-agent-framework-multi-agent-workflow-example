@@ -9,9 +9,6 @@ import { Message, Role, MessageContentPart } from "bee-agent-framework/backend/c
 // watsonx configruation
 import { WatsonxChatModel } from "bee-agent-framework/adapters/watsonx/backend/chat";
 
-// Logging
-import { ToolEvents } from "bee-agent-framework/backend/base";
-
 /// *******************************
 /// 1. Chat model setup
 /// *******************************
