@@ -5,6 +5,7 @@ This repository was built on the [Bee Agent Framework Starter]() repository. The
 The repository as a starting point for multi-agents with the coding from the [MultiAgents](https://github.com/i-am-bee/bee-agent-framework/blob/main/examples/workflows/multiAgents.ts) in the [Bee Agent Framework](https://github.com/i-am-bee/bee-agent-framework). 
 
 Currently, on January 20, the [Bee Agent Framework provides experimental workflows](https://i-am-bee.github.io/bee-agent-framework/#/workflows) with a multi-agent configuration running them in a sequence.
+(contains update BeeAgentFramework 0.1.1)
 
 The following example two questions concerns the weather in New York. 
 
