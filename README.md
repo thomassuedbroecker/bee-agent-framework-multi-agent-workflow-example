@@ -68,19 +68,30 @@ npm run start src/multi_agent_example.ts
 > bee-agent-framework-starter@0.0.1 start
 > npm exec tsx src/multi_agent_example.ts
 
+-------
 To test the configuration you can use the two following questions
 -------
 1. Ask a simple question 👤 : What is the current weather in New York?
 2. Ask a more complex question 👤 : What do you expect based on the current weather and the information related to climate changes for the city of New York? Will there be problems for the next month?
 -------
 Interactive session has started. To escape, input 'q' and submit.
-User input 👤 : What do you expect based on the current weather and the information related to climate changes for the city of New York? Will there be problems for the next month?
--> WeatherForecaster Based on the current weather and forecast for the next two weeks, New York is expected to experience cold temperatures, with highs ranging from -7.2°C to 15.8°C and lows ranging from -14°C to 7.1°C. There will be some rain, with the most significant amount expected on February 4th and 5th, with 7.7mm and 3mm of rain, respectively. However, please note that this forecast only goes until February 5th, and it's recommended to check for updates for the rest of the month. Additionally, climate change is expected to impact weather patterns, but its effects on the specific weather in New York for the next month are uncertain and would require more detailed climate models to predict.
--> Researcher Based on the current weather trends and climate change predictions, New York City is expected to experience cold temperatures, with potential snowfall, in February 2025. However, the exact weather forecast for the next month is not clear. It's recommended to check for updates for the most accurate and up-to-date information. Additionally, climate change is expected to impact weather patterns, but its effects on the specific weather in New York City for the next month are uncertain and would require more detailed climate models to predict.
--> Solver Based on the current weather forecast, New York City can expect cold temperatures, with highs ranging from -7.2°C to 15.8°C and lows ranging from -14°C to 7.1°C, and some rain, with the most significant amount expected on February 4th and 5th, for the next two weeks. However, the forecast for the rest of the month is uncertain, and it's recommended to check for updates. Climate change is expected to impact weather patterns, but its effects on the specific weather in New York City for the next month are uncertain and would require more detailed climate models to predict. It's always a good idea to check for updates and stay informed about the latest weather forecast and climate change predictions.
-Agent 🤖 Based on the current weather forecast, New York City can expect cold temperatures, with highs ranging from -7.2°C to 15.8°C and lows ranging from -14°C to 7.1°C, and some rain, with the most significant amount expected on February 4th and 5th, for the next two weeks. However, the forecast for the rest of the month is uncertain, and it's recommended to check for updates. Climate change is expected to impact weather patterns, but its effects on the specific weather in New York City for the next month are uncertain and would require more detailed climate models to predict. It's always a good idea to check for updates and stay informed about the latest weather forecast and climate change predictions.
+User input 👤 : What is the current weather in New York?
+-> WeatherForecaster:  The current weather in New York as of 17:45 on February 14, 2025, is 2.3°C with a relative humidity of 30% and a wind speed of 23.6 km/h.
+-> Researcher:  I don't have the current weather conditions for New York on February 14, 2025. For the most up-to-date and accurate information, I recommend checking a reliable weather website or app.
+-> Solver:  As of 5:56 PM on February 14, 2025, the current weather in New York is 2.3°C with a relative humidity of 30% and a wind speed of 23.6 km/h, according to the WeatherForecaster.
+--------
+Agent 🤖 As of 5:56 PM on February 14, 2025, the current weather in New York is 2.3°C with a relative humidity of 30% and a wind speed of 23.6 km/h, according to the WeatherForecaster.
 
--> The time to answer the question the LLMs took 113.55794820899999 seconds.
+-> The time to answer the question the LLMs took 34.678531167 seconds.
+
+User input 👤 : What do you expect based on the current weather and the information related to climate changes for the city of New York? Will there be problems for the next month?
+-> WeatherForecaster:  For the next month in New York, the temperature is expected to fluctuate, with highs ranging from 0.4°C to 12°C and lows ranging from -6.6°C to 0.9°C. There will be some precipitation, with the most significant amount (31 mm) on February 16. Potential problems related to climate change include extreme temperature fluctuations and increased precipitation, which can lead to flooding and disrupted daily life. However, this forecast only goes until March 1, so it's essential to continue monitoring the weather for the rest of the month.
+-> Researcher:  For the next month in New York, the temperature is expected to fluctuate, with highs ranging from 0.4°C to 12°C and lows ranging from -6.6°C to 0.9°C. There will be some precipitation, with the most significant amount (31 mm) on February 16. Potential problems related to climate change include extreme temperature fluctuations and increased precipitation, which can lead to flooding and disrupted daily life. According to the National Weather Service's Climate Prediction Center, there is a likelihood of above-average temperatures in February 2025. Additionally, AccuWeather's 2025 U.S. Spring Forecast predicts that spring warmth will expand across the southern and central U.S., while the northern states will experience a chilly transition. It's essential to continue monitoring the weather for the rest of the month, as forecasts can change.
+-> Solver:  Based on the current weather conditions and climate change trends, for the next month in New York, you can expect fluctuating temperatures, with highs ranging from 0.4°C to 12°C and lows ranging from -6.6°C to 0.9°C, and some precipitation, with the most significant amount (31 mm) on February 16. Potential problems related to climate change include extreme temperature fluctuations and increased precipitation, which can lead to flooding and disrupted daily life. It's essential to continue monitoring the weather for the rest of the month, as forecasts can change.
+--------
+Agent 🤖 Based on the current weather conditions and climate change trends, for the next month in New York, you can expect fluctuating temperatures, with highs ranging from 0.4°C to 12°C and lows ranging from -6.6°C to 0.9°C, and some precipitation, with the most significant amount (31 mm) on February 16. Potential problems related to climate change include extreme temperature fluctuations and increased precipitation, which can lead to flooding and disrupted daily life. It's essential to continue monitoring the weather for the rest of the month, as forecasts can change.
+
+-> The time to answer the question the LLMs took 107.85920366699999 seconds.
 ```
 
 # Changes in the configuration
@@ -90,15 +101,12 @@ This is an early first try using watsonx AI with a chat configuration in this co
 The example code shows the remaining needed code for the configuration.
 
 ```typescript
-const chatLLM = WatsonXChatLLM.fromPreset("meta-llama/llama-3-3-70b-instruct", {
-    projectId: process.env.WATSONX_PROJECT_ID,
-    baseUrl: process.env.WATSONX_BASE_URL,
-    apiKey: process.env.WATSONX_API_KEY,
-    parameters: {
-      decoding_method: "greedy",
-      max_new_tokens: 500,
-    },
-})
+const chatLLM = new WatsonxChatModel(
+  "meta-llama/llama-3-3-70b-instruct"
+)
+
+chatLLM.parameters.maxTokens = 500
+chatLLM.parameters.temperature = 1
 ```
 
 📚 See the [documentation](https://i-am-bee.github.io/bee-agent-framework/) to learn more.
@@ -110,7 +118,12 @@ const chatLLM = WatsonXChatLLM.fromPreset("meta-llama/llama-3-3-70b-instruct", {
 ## Run the examples
 
 1. Clone this repository
-2. Install dependencies `npm ci`.
+2. Install dependencies 
+
+```sh
+npm ci
+npm install @ibm-cloud/watsonx-ai
+``` 
 3. Configure your project by filling in missing values in the `.env` file for watsonx.
 
 ```sh
@@ -121,11 +134,14 @@ cat .env_template > .env
 
 ```sh
 ## WatsonX
-export WATSONX_API_KEY=
-export WATSONX_PROJECT_ID=
-export WATSONX_MODEL="meta-llama/llama-3-3-70b-instruct"
+export WATSONX_API_KEY=""
+export WATSONX_PROJECT_ID=""
 export WATSONX_REGION="us-south"
-export WATSONX_DEPLOYMENT_ID="XXX"
+export WATSONX_CHAT_MODEL="meta-llama/llama-3-3-70b-instruct"
+# export WATSONX_EMBEDDING_MODEL=""
+# export WATSONX_PROJECT_ID=""
+# export WATSONX_SPACE_ID=""
+# export WATSONX_VERSION=""
 ```
 
 5. Run the agents

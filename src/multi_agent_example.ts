@@ -3,28 +3,25 @@ import { UnconstrainedMemory } from "bee-agent-framework/memory/unconstrainedMem
 import { createConsoleReader } from "./helpers/io.js";
 import { OpenMeteoTool } from "bee-agent-framework/tools/weather/openMeteo";
 import { DuckDuckGoSearchTool } from "bee-agent-framework/tools/search/duckDuckGoSearch";
-import { AgentWorkflow } from "bee-agent-framework/experimental/workflows/agent";
-import { BaseMessage, Role } from "bee-agent-framework/llms/primitives/message";
+import { AgentWorkflow } from "bee-agent-framework/workflows/agent";
+import { Message, Role, MessageContentPart } from "bee-agent-framework/backend/core";
 
 // watsonx configruation
-import { WatsonXChatLLM } from "bee-agent-framework/adapters/watsonx/chat";
+import { WatsonxChatModel } from "bee-agent-framework/adapters/watsonx/backend/chat";
 
 // Logging
-import { BaseLLMEvents } from "bee-agent-framework/llms/base";
+import { ToolEvents } from "bee-agent-framework/backend/base";
 
 /// *******************************
 /// 1. Chat model setup
 /// *******************************
-  
-const chatLLM = WatsonXChatLLM.fromPreset("meta-llama/llama-3-3-70b-instruct", {
-    projectId: process.env.WATSONX_PROJECT_ID,
-    baseUrl: process.env.WATSONX_BASE_URL,
-    apiKey: process.env.WATSONX_API_KEY,
-    parameters: {
-      decoding_method: "greedy",
-      max_new_tokens: 500,
-    },
-})
+
+const chatLLM = new WatsonxChatModel(
+  "meta-llama/llama-3-3-70b-instruct"
+)
+
+chatLLM.parameters.maxTokens = 500
+chatLLM.parameters.temperature = 1
 
 // *********************************
 // 2. Workflow creation
@@ -76,7 +73,7 @@ console.info(`-------`);
 
 for await (const { prompt } of reader) {
   await memory.add(
-    BaseMessage.of({
+    Message.of({
       role: Role.USER,
       text: prompt,
       meta: { createdAt: new Date() },
@@ -84,33 +81,26 @@ for await (const { prompt } of reader) {
   );
 
   const { result } = await workflow.run(memory.messages).observe((emitter) => {
-      emitter.on("success", (data) => {
-        reader.write(`-> ${data.step}`, data.response?.update?.finalAnswer ?? "-");
+      
+     emitter.on("success", (data) => {
+        reader.write(`-> ${data.step}: `, `${data.state.finalAnswer}`);
+        /*
+        let count = (data.state.newMessages as Message<MessageContentPart, string>[]).length;
+        let i = 0
+        reader.write(`   -> History length: `, `${(data.state.newMessages as Message<MessageContentPart, string>[]).length}`);
+        while ((count-1) >= i){         
+          reader.write(`   -> History  role[${i}]: `, `${(data.state.newMessages as Message<MessageContentPart, string>[])[i].role}`);
+          reader.write(`   -> History  text[${i}]: `, `${(data.state.newMessages as Message<MessageContentPart, string>[])[i].text}`);
+          i = i + 1
+        }
+        reader.write(`   -> Next step: `, `${data.next}`);
+        */
       })
-      // Uncomment to output more details
-      /*
-      emitter.match("*.*", async (data: any, event) => {
-          if (event.creator === chatLLM) {
-            const eventName = event.name as keyof BaseLLMEvents;
-            switch (eventName) {
-              case "start":
-                console.info("LLM Input");
-                console.info(data.input);
-                break;
-              case "success":
-                console.info("LLM Output");
-                console.info(data.value.raw.finalResult);
-                break;
-              case "error":
-                console.error(data);
-                break;
-            }
-          }
-        });
-      */
+
   });
   // await memory.addMany(result.newMessages); // save all steps including the answer for the conversation
   await memory.addMany(result.newMessages.slice(-1)); // save only the final answer for in the conversation
+  reader.write(`--------`, "");
   reader.write(`Agent 🤖`, result.finalAnswer);
   const endTime = performance.now()
   console.log(`\n-> The time to answer the question the LLMs took ${((endTime - startTime)/1000)} seconds.\n`)
